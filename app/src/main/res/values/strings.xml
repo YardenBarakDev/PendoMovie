@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PendoMovie</string>
+    <string name="api_key">21fd2d263e811750bdb2445fe08d608e</string>
+    <string name="search">Search</string>
+
+    <string-array name="spinner_options">
+        <item>Top Rated</item>
+        <item>Latest</item>
+        <item>Popular</item>
+        <item>Now Playing</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description">Description:</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="latest">Latest</string>
+    <string name="popular">Popular</string>
+    <string name="now_playing">Now Playing</string>
+
+</resources>

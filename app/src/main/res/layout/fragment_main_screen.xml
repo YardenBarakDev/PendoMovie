@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mvvm.view.fragments.FragmentMainScreen">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/fragmentMainScreen_topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/black"
+            app:titleTextColor="@color/yellow"
+            app:title="@string/app_name"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/icon_search"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragmentMainScreen_RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar"
+        android:layout_above="@+id/fragmentMainScreen_bottomNavigationView"
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fragmentMainScreen_bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black"
+        app:itemTextColor="@color/yellow"
+        app:menu="@menu/bottom_navigation_bar_menu"
+        app:labelVisibilityMode="labeled"
+        />
+
+</RelativeLayout>

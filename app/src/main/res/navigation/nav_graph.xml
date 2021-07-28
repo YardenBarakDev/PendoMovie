@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentMainScreen">
+
+    <fragment
+        android:id="@+id/fragmentMainScreen"
+        android:name="com.ybdev.pendomovie.mvvm.view.fragments.FragmentMainScreen"
+        android:label="fragment_main_screen"
+        tools:layout="@layout/fragment_main_screen" >
+        <action
+            android:id="@+id/action_fragmentMainScreen_to_fragmentMovieDetails"
+            app:destination="@id/fragmentMovieDetails" />
+        <action
+            android:id="@+id/action_fragmentMainScreen_to_fragmentSearch"
+            app:destination="@id/fragmentSearch" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMovieDetails"
+        android:name="com.ybdev.pendomovie.mvvm.view.fragments.FragmentMovieDetails"
+        android:label="fragment_movie_details"
+        tools:layout="@layout/fragment_movie_details" />
+    <fragment
+        android:id="@+id/fragmentSearch"
+        android:name="com.ybdev.pendomovie.mvvm.view.fragments.FragmentSearch"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+</navigation>
