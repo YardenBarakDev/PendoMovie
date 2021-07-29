@@ -3,7 +3,6 @@ package com.ybdev.pendomovie.mvvm.view.fragments;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,23 +31,32 @@ public class FragmentSearch extends Fragment {
     private ArrayAdapter<String> possibleResults;
     private SearchAdapter searchAdapter;
     private final ArrayList<MovieList.ResultBean> movieList = new ArrayList<>();
-    private boolean searchData = false;
+    private boolean isLoading = true;
+    private int maxPagesForRelated = 1;
+    private int currentPage = 1;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
             view = inflater.inflate(R.layout.fragment_search, container, false);
+
         findViews();
         initRecyclerView();
         initArrayAdapter();
         topBarListener();
+        recyclerViewListener();
         autoCompleteTextViewListener();
         observeMatchList();
         observeRelatedMovies();
         return view;
     }
 
+    /**
+     * this method will observe the liveData from the viewModel and update the array adapter
+     * according to the search results
+     */
     private void observeMatchList() {
             SearchViewModel.getInstance().movieNameSearch().observe(getViewLifecycleOwner(), resultBeans -> {
                 if (resultBeans != null) {
@@ -57,23 +65,56 @@ public class FragmentSearch extends Fragment {
                         possibleResults.add(s.getName());
                         fragmentSearch_autoCompleteTextView.setAdapter(possibleResults);
                     }
+                    isLoading = true;
                 }
             });
     }
 
+    /**
+     * this method will observe the liveData from the viewModel and update the movie list
+     * according to the search results
+     */
     private void observeRelatedMovies(){
-        SearchViewModel.getInstance().getRelatedMovies().observe(getViewLifecycleOwner(), resultBeans -> {
+        SearchViewModel.getInstance().getRelatedMovies(currentPage).observe(getViewLifecycleOwner(), resultBeans -> {
             if (resultBeans != null){
-                movieList.clear();
-                movieList.addAll(resultBeans);
-                for (int i = 0; i < movieList.size(); i++) {
-                    Log.d("kkkk", movieList.get(i).getTitle());
-                }
+                maxPagesForRelated = resultBeans.getTotal_pages();
+                movieList.addAll(resultBeans.getResults());
                 searchAdapter.setMovieArray(movieList);
             }
         });
     }
+
+    /**
+     * this method will initiate the recyclerView scroll listener
+     * and will ask the viewModel to ask the next page from the api.
+     *
+     * it will only ask if we haven't reached the last page and the user
+     * is at the bottom of the list
+     */
+    private void recyclerViewListener() {
+        fragmentSearch_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                GridLayoutManager gridLayoutManager = (GridLayoutManager)fragmentSearch_RecyclerView.getLayoutManager();
+                if (currentPage <= maxPagesForRelated && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
+                    currentPage++;
+                    isLoading = false;
+                    SearchViewModel.getInstance().getRelatedMovies(currentPage);//call the viewModel to fetch new data
+                }
+            }
+        });
+    }
+
+    /**
+     * this function will create listeners for the autoCompleteTextView
+     * and will handle user interaction with the autoCompleteTextView
+     */
     private void autoCompleteTextViewListener() {
+
+        /*
+        a query will be sent to the api only if the text size is bigger then 2 and divided by 2
+         */
         fragmentSearch_autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -86,20 +127,40 @@ public class FragmentSearch extends Fragment {
                 if (s.length() > 1 && s.length()%2 == 0){
                     SearchViewModel.getInstance().setQuery(s.toString());
                     SearchViewModel.getInstance().movieNameSearch();
-                    searchData = true;
                 }
-                else
-                    searchData = false;
             }
 
         });
 
+        //when the user click on an item from the list
         fragmentSearch_autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-                SearchViewModel.getInstance().setQueryForRelated(possibleResults.getItem(position));
-                SearchViewModel.getInstance().getRelatedMovies();
+            prepareNextSearch();
+            SearchViewModel.getInstance().setQueryForRelated(possibleResults.getItem(position));
+                SearchViewModel.getInstance().getRelatedMovies(currentPage);
+        });
+
+        //when the user click on the search option
+        fragmentSearch_autoCompleteTextView.setOnClickListener(v -> {
+            prepareNextSearch();
+            SearchViewModel.getInstance().setQueryForRelated(fragmentSearch_autoCompleteTextView.getText().toString());
+            SearchViewModel.getInstance().getRelatedMovies(currentPage);
         });
     }
 
+    /**
+     * clear all the data between searches
+     */
+    private void prepareNextSearch(){
+        currentPage = 1;
+        maxPagesForRelated = 1;
+        fragmentSearch_RecyclerView.smoothScrollToPosition(0);
+        movieList.clear();
+        searchAdapter.removeData();
+    }
+
+    /**
+     * initiate the array adapter for the autoCompleteTextView
+     */
     private void initArrayAdapter() {
         possibleResults = new ArrayAdapter<>(getContext(), R.layout.search_cell, R.id.search_movie_name);
         fragmentSearch_autoCompleteTextView.setAdapter(possibleResults);
@@ -109,14 +170,13 @@ public class FragmentSearch extends Fragment {
      * pop the view from the stack and show the main page
      */
     private void topBarListener() {
-        fragmentSearch_topAppBar.setNavigationOnClickListener(v ->{
-            NavHostFragment.findNavController(FragmentSearch.this).popBackStack();
-            possibleResults.clear();
-            searchAdapter.setMovieArray(new ArrayList<>());
-            fragmentSearch_RecyclerView.smoothScrollToPosition(0);
-        });
+        fragmentSearch_topAppBar.setNavigationOnClickListener(v ->
+                NavHostFragment.findNavController(FragmentSearch.this).popBackStack());
     }
 
+    /**
+     * initiate the recycler view
+     */
     private void initRecyclerView() {
         int numOfColumns = 2;
         searchAdapter = new SearchAdapter(new ArrayList<>(), getContext());

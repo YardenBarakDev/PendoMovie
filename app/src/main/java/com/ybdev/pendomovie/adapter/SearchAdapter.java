@@ -20,9 +20,6 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    //final int VIEW_TYPE_LOADING = 0;
-    //final int VIEW_TYPE_ITEM = 1;
-
     private static List<MovieList.ResultBean> movieList;
     private final Context context;
 
@@ -69,19 +66,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return movieList.size();
     }
 
-
-    //@Override
-    //public int getItemViewType(int position) {
-    //    return movieList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
-    //}
-
     public void setMovieArray(List<MovieList.ResultBean> movieArray){
-        movieList.clear();
+        int size = movieList.size() -1;
         movieList.addAll(movieArray);
         movieList.add(null);
-        notifyDataSetChanged();
+        notifyItemChanged(size, movieList.size() -1);
     }
 
+    public void removeData(){
+        movieList.clear();
+        notifyDataSetChanged();
+    }
     public void removeLast(){
         movieList.remove(movieList.size()-1);
     }

@@ -38,16 +38,16 @@ public class FragmentMovieDetails extends Fragment {
     }
 
     private void setTopBarClickListener() {
-        fragmentMovieDetails_topAppBar.setNavigationOnClickListener(v -> {
-            NavHostFragment.findNavController(FragmentMovieDetails.this).popBackStack();
-                });
+        fragmentMovieDetails_topAppBar.setNavigationOnClickListener(v ->
+                NavHostFragment.findNavController(FragmentMovieDetails.this).popBackStack());
     }
 
-
+    /**
+     * fetch the data from the bundle and present it in the view
+     */
     @SuppressLint("SetTextI18n")
     private void showMovieDetails() {
         try {
-
             MovieList.ResultBean movie = getArguments().getParcelable(MyConstants.MOVIE);
             fragmentMovieDetails_topAppBar.setTitle(movie.getTitle());
             setImage(movie.getPoster_path());
@@ -59,9 +59,11 @@ public class FragmentMovieDetails extends Fragment {
         }catch (NullPointerException e){
             e.printStackTrace();
         }
-
     }
 
+    /**
+     *this function will present the movie poster from the url using Glide library
+     */
     private void setImage(String poster_path) {
         Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w500"+poster_path)
@@ -76,6 +78,4 @@ public class FragmentMovieDetails extends Fragment {
         movieDetailsFragment_voteAverage = view.findViewById(R.id.movieDetailsFragment_voteAverage);
         movieDetailsFragment_totalVotes = view.findViewById(R.id.movieDetailsFragment_totalVotes);
     }
-
-
 }

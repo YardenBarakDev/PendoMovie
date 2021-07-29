@@ -14,8 +14,9 @@ public class SearchViewModel extends ViewModel {
     private static SearchViewModel instance;
     TMDBRepository repository = TMDBRepository.getInstance();
     private String query = "   ";
-    private String queryForRelated = "";
     private final int page = 1;
+    private String queryForRelated = "";
+
 
     private SearchViewModel(){}
 
@@ -29,11 +30,9 @@ public class SearchViewModel extends ViewModel {
         return repository.movieNameSearch(page,query);
     }
 
-    public MutableLiveData<List<MovieList.ResultBean>> getRelatedMovies(){
-        return repository.getRelatedMovies(queryForRelated, page);
+    public MutableLiveData<MovieList> getRelatedMovies(int pageForRelated){
+        return repository.getRelatedMovies(queryForRelated, pageForRelated);
     }
-
-
 
     public void setQuery(String query) {
         this.query = query;

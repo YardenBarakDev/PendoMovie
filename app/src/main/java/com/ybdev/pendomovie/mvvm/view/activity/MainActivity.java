@@ -4,11 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.ybdev.pendomovie.R;
 
-//B4dk!gAF3FJYBSZ
-
 public class MainActivity extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +12,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-
     }
+
 }

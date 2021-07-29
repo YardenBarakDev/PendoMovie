@@ -21,7 +21,7 @@ public class TMDBRepository {
     private final String LANGUAGE = "en-US";
     public MutableLiveData<List<MovieList.ResultBean>> list = new MutableLiveData<>();
     public MutableLiveData<List<MovieSearchModel.ResultBean>> queryList = new MutableLiveData<>();
-    public MutableLiveData<List<MovieList.ResultBean>> relatedMoviesList = new MutableLiveData<>();
+    public MutableLiveData<MovieList> relatedMoviesList = new MutableLiveData<>();
     private final ApiInterface apiInterface;
 
 
@@ -57,16 +57,15 @@ public class TMDBRepository {
     }
 
     //for search page
-    public MutableLiveData<List<MovieList.ResultBean>> getRelatedMovies(String query, int page){
+    public MutableLiveData<MovieList> getRelatedMovies(String query, int page){
 
         Call<MovieList> call = apiInterface.getRelatedMovies(API_KEY,LANGUAGE, query, page);
         call.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(@NonNull Call<MovieList> call, @NonNull Response<MovieList> response) {
-                MovieList movieList = response.body();
-                if (query.length() >= 1 &&movieList.getResults() != null) {
-                    relatedMoviesList.setValue(movieList.getResults());
-                }
+                    relatedMoviesList.setValue(response.body());
+                Log.d(TAG, "onResponse: ");
+
             }
 
             @Override
@@ -100,5 +99,4 @@ public class TMDBRepository {
         });
         return queryList;
     }
-
 }
