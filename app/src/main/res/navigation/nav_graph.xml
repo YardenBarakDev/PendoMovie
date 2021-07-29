@@ -26,5 +26,9 @@
         android:id="@+id/fragmentSearch"
         android:name="com.ybdev.pendomovie.mvvm.view.fragments.FragmentSearch"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_fragmentSearch_to_fragmentMovieDetails"
+            app:destination="@id/fragmentMovieDetails" />
+    </fragment>
 </navigation>

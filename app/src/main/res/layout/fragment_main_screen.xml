@@ -23,7 +23,11 @@
             app:titleCentered="true"
             app:navigationIcon="@drawable/icon_search"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            />
+            >
+
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -39,12 +43,11 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/fragmentMainScreen_bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/black"
         app:itemTextColor="@color/yellow"
         app:menu="@menu/bottom_navigation_bar_menu"
-        app:labelVisibilityMode="labeled"
         />
 
 </RelativeLayout>

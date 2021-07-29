@@ -16,5 +16,9 @@
     <string name="latest">Latest</string>
     <string name="popular">Popular</string>
     <string name="now_playing">Now Playing</string>
+    <string name="movie_name">Movie name</string>
+    <string name="release_date">Release date:</string>
+    <string name="vote_average">Vote average</string>
+    <string name="total_votes">Total votes</string>
 
 </resources>

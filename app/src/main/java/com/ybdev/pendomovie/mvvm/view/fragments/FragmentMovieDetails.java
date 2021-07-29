@@ -1,6 +1,7 @@
 package com.ybdev.pendomovie.mvvm.view.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +22,10 @@ public class FragmentMovieDetails extends Fragment {
     protected View view;
     private MaterialToolbar fragmentMovieDetails_topAppBar;
     private ImageView movieDetailsFragment_image;
-    private TextView movieDetailsFragment_movieTitle;
     private TextView movieDetailsFragment_movieOverview;
+    private TextView movieDetailsFragment_releaseDate;
+    private TextView movieDetailsFragment_voteAverage;
+    private TextView movieDetailsFragment_totalVotes;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,27 +44,37 @@ public class FragmentMovieDetails extends Fragment {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void showMovieDetails() {
-        MovieList.ResultBean movie = getArguments().getParcelable(MyConstants.MOVIE);
-        movieDetailsFragment_movieTitle.setText(movie.getTitle());
-        setImage(movie.getPoster_path());
-        movieDetailsFragment_movieOverview.setText(movie.getOverview());
+        try {
+
+            MovieList.ResultBean movie = getArguments().getParcelable(MyConstants.MOVIE);
+            fragmentMovieDetails_topAppBar.setTitle(movie.getTitle());
+            setImage(movie.getPoster_path());
+            movieDetailsFragment_movieOverview.setText(movie.getOverview());
+            movieDetailsFragment_releaseDate.setText(movie.getRelease_date());
+            movieDetailsFragment_voteAverage.setText(""+movie.getVote_average());
+            movieDetailsFragment_totalVotes.setText("" +movie.getVote_count());
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
     }
 
     private void setImage(String poster_path) {
-
         Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w500"+poster_path)
                 .into(movieDetailsFragment_image);
-
     }
 
     private void findViews() {
         fragmentMovieDetails_topAppBar = view.findViewById(R.id.fragmentMovieDetails_topAppBar);
         movieDetailsFragment_image = view.findViewById(R.id.movieDetailsFragment_image);
-        movieDetailsFragment_movieTitle = view.findViewById(R.id.movieDetailsFragment_movieTitle);
         movieDetailsFragment_movieOverview = view.findViewById(R.id.movieDetailsFragment_movieOverview);
-
+        movieDetailsFragment_releaseDate = view.findViewById(R.id.movieDetailsFragment_releaseDate);
+        movieDetailsFragment_voteAverage = view.findViewById(R.id.movieDetailsFragment_voteAverage);
+        movieDetailsFragment_totalVotes = view.findViewById(R.id.movieDetailsFragment_totalVotes);
     }
 
 

@@ -82,6 +82,18 @@ public class MovieList {
             vote_average = in.readDouble();
         }
 
+        public static final Creator<ResultBean> CREATOR = new Creator<ResultBean>() {
+            @Override
+            public ResultBean createFromParcel(Parcel in) {
+                return new ResultBean(in);
+            }
+
+            @Override
+            public ResultBean[] newArray(int size) {
+                return new ResultBean[size];
+            }
+        };
+
         public String getPoster_path() {
             return poster_path;
         }

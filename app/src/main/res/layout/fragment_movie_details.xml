@@ -52,14 +52,85 @@
             android:layout_marginEnd="3dp"
             >
 
-            <TextView
-                android:id="@+id/movieDetailsFragment_movieTitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/yellow"
-                android:textStyle="bold"
-                android:textSize="25sp"
-                />
+                android:orientation="horizontal"
+                android:weightSum="3"
+                >
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/release_date"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vote_average"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_votes"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                >
+
+
+                <TextView
+                    android:id="@+id/movieDetailsFragment_releaseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/movieDetailsFragment_voteAverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+
+                    />
+
+                <TextView
+                    android:id="@+id/movieDetailsFragment_totalVotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/yellow"
+                    android:textStyle="bold|italic"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    />
+
+
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

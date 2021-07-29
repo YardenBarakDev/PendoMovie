@@ -1,12 +1,9 @@
 package com.ybdev.pendomovie.mvvm.view_model;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.ybdev.pendomovie.mvvm.model.MovieList;
 import com.ybdev.pendomovie.repository.TMDBRepository;
-
 import java.util.List;
 
 public class MainScreenViewModel extends ViewModel {
@@ -27,7 +24,6 @@ public class MainScreenViewModel extends ViewModel {
 
     public MutableLiveData<List<MovieList.ResultBean>> getMovieList(){
         page++;
-        Log.d("jjjj", "page =" + page);
         return repository.getMovieList(page, category);
     }
 

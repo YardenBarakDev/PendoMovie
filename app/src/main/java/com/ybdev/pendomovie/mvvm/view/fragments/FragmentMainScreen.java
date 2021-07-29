@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ybdev.pendomovie.R;
 import com.ybdev.pendomovie.adapter.MovieAdapter;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 public class FragmentMainScreen extends Fragment {
 
     protected View view;
+    private MaterialToolbar fragmentMainScreen_topAppBar;
     private BottomNavigationView fragmentMainScreen_bottomNavigationView;
     private RecyclerView fragmentMainScreen_RecyclerView;
     private final ArrayList<MovieList.ResultBean> movieList = new ArrayList<>();
@@ -34,9 +37,16 @@ public class FragmentMainScreen extends Fragment {
         initRecyclerView();
         MainScreenViewModel.getInstance().setCategory(MyConstants.NOW_PLAYING);
         observe();
-        RecyclerViewListener();
+        topBarListener();
+        recyclerViewListener();
         bottomNavigationViewListener();
         return view;
+    }
+
+    private void topBarListener() {
+        fragmentMainScreen_topAppBar.setNavigationOnClickListener(v ->
+                NavHostFragment.findNavController(FragmentMainScreen.this).
+                        navigate(R.id.action_fragmentMainScreen_to_fragmentSearch));
     }
 
     /**
@@ -71,6 +81,7 @@ public class FragmentMainScreen extends Fragment {
             else if (item.getItemId() == R.id.now_playing)
                 MainScreenViewModel.getInstance().setCategory(MyConstants.NOW_PLAYING);
 
+            fragmentMainScreen_RecyclerView.smoothScrollToPosition(0);
             MainScreenViewModel.getInstance().setPage(0);
             movieList.clear();
             MainScreenViewModel.getInstance().getMovieList();
@@ -79,6 +90,8 @@ public class FragmentMainScreen extends Fragment {
 
         //prevent the user to click on the same option twice
         fragmentMainScreen_bottomNavigationView.setOnItemReselectedListener(item -> {/* No op*/ });
+        //show icons original color
+        fragmentMainScreen_bottomNavigationView.setItemIconTintList(null);
     }
 
     /**
@@ -86,7 +99,7 @@ public class FragmentMainScreen extends Fragment {
      * once the user reached to the last item, new data will be fetched from the api
      * and will be presented in the RecyclerView
      */
-    private void RecyclerViewListener(){
+    private void recyclerViewListener(){
       fragmentMainScreen_RecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
           @Override
           public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -102,6 +115,7 @@ public class FragmentMainScreen extends Fragment {
     }
 
     private void findViews() {
+        fragmentMainScreen_topAppBar = view.findViewById(R.id.fragmentMainScreen_topAppBar);
         fragmentMainScreen_bottomNavigationView = view.findViewById(R.id.fragmentMainScreen_bottomNavigationView);
         fragmentMainScreen_RecyclerView = view.findViewById(R.id.fragmentMainScreen_RecyclerView);
     }

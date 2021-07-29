@@ -1,14 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mvvm.view.fragments.FragmentSearch">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mvvm.view.fragments.FragmentSearch"
+    android:background="@color/black"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        >
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/fragmentSearch_topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/black"
+            app:titleTextColor="@color/yellow"
+            app:title="@string/search"
+            app:titleCentered="true"
+            app:navigationIcon="@drawable/left_arrow"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <AutoCompleteTextView
+        android:id="@+id/fragmentSearch_autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/yellow"
+        android:background="@color/grey"
+        android:hint="@string/movie_name"
+        android:textColorHint="@color/yellow"
+        android:layout_margin="8dp"
+        android:layout_below="@+id/topBar"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragmentSearch_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:layout_below="@+id/fragmentSearch_autoCompleteTextView"
+        />
+</RelativeLayout>
