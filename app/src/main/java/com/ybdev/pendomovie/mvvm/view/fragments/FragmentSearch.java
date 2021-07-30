@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 public class FragmentSearch extends Fragment {
 
     protected View view;
+    private ProgressBar fragmentSearch_progressBar;
     private MaterialToolbar fragmentSearch_topAppBar;
     private AutoCompleteTextView fragmentSearch_autoCompleteTextView;
     private RecyclerView fragmentSearch_RecyclerView;
@@ -76,6 +78,7 @@ public class FragmentSearch extends Fragment {
      */
     private void observeRelatedMovies(){
         SearchViewModel.getInstance().getRelatedMovies(currentPage).observe(getViewLifecycleOwner(), resultBeans -> {
+            progressBarVisibility(false);
             if (resultBeans != null){
                 maxPagesForRelated = resultBeans.getTotal_pages();
                 movieList.addAll(resultBeans.getResults());
@@ -97,10 +100,12 @@ public class FragmentSearch extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager gridLayoutManager = (GridLayoutManager)fragmentSearch_RecyclerView.getLayoutManager();
-                if (currentPage <= maxPagesForRelated && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
+                if (currentPage < maxPagesForRelated && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
                     currentPage++;
                     isLoading = false;
+                    progressBarVisibility(true);
                     SearchViewModel.getInstance().getRelatedMovies(currentPage);//call the viewModel to fetch new data
+
                 }
             }
         });
@@ -148,9 +153,19 @@ public class FragmentSearch extends Fragment {
     }
 
     /**
+     *shows a circular progress bar until we get respond from the api
+     */
+    private void progressBarVisibility(boolean visible){
+        if (visible)
+            fragmentSearch_progressBar.setVisibility(View.VISIBLE);
+        else
+            fragmentSearch_progressBar.setVisibility(View.INVISIBLE);
+    }
+    /**
      * clear all the data between searches
      */
     private void prepareNextSearch(){
+        progressBarVisibility(true);
         currentPage = 1;
         maxPagesForRelated = 1;
         fragmentSearch_RecyclerView.smoothScrollToPosition(0);
@@ -185,6 +200,7 @@ public class FragmentSearch extends Fragment {
     }
 
     private void findViews() {
+        fragmentSearch_progressBar = view.findViewById(R.id.fragmentSearch_progressBar);
         fragmentSearch_topAppBar = view.findViewById(R.id.fragmentSearch_topAppBar);
         fragmentSearch_autoCompleteTextView = view.findViewById(R.id.fragmentSearch_autoCompleteTextView);
         fragmentSearch_RecyclerView = view.findViewById(R.id.fragmentSearch_RecyclerView);

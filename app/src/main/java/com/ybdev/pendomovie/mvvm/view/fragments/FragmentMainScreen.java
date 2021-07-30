@@ -90,8 +90,6 @@ public class FragmentMainScreen extends Fragment {
 
         //prevent the user to click on the same option twice
         fragmentMainScreen_bottomNavigationView.setOnItemReselectedListener(item -> {/* No op*/ });
-        //show icons original color
-        fragmentMainScreen_bottomNavigationView.setItemIconTintList(null);
     }
 
     /**

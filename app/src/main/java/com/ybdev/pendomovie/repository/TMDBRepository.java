@@ -13,6 +13,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * singleton class
+ * this class will handle calls to TMDB api
+ */
 public class TMDBRepository {
 
     private static TMDBRepository instance;
@@ -34,6 +38,7 @@ public class TMDBRepository {
     private TMDBRepository(){
         apiInterface = MyRetrofit.getInterface();
     }
+
 
     //for main page
     public MutableLiveData<List<MovieList.ResultBean>> getMovieList(int page, String category){
