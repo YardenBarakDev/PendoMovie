@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_fragmentMainScreen_to_fragmentSearch"
             app:destination="@id/fragmentSearch" />
+        <action
+            android:id="@+id/action_fragmentMainScreen_to_fragmentFavorite"
+            app:destination="@id/fragmentFavorite" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMovieDetails"
@@ -31,4 +34,12 @@
             android:id="@+id/action_fragmentSearch_to_fragmentMovieDetails"
             app:destination="@id/fragmentMovieDetails" />
     </fragment>
+    <action
+        android:id="@+id/action_global_fragmentMovieDetails"
+        app:destination="@id/fragmentMovieDetails" />
+    <fragment
+        android:id="@+id/fragmentFavorite"
+        android:name="com.ybdev.pendomovie.mvvm.view.fragments.FragmentFavorite"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
 </navigation>

@@ -21,9 +21,11 @@
             android:background="@color/black"
             app:titleTextColor="@color/yellow"
             app:titleCentered="true"
+            app:menu="@menu/fragment_movie_details_menu"
             app:navigationIcon="@drawable/left_arrow"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             />
+
 
     </com.google.android.material.appbar.AppBarLayout>
     <ImageView
@@ -32,7 +34,7 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:scaleType="fitCenter"
-        />
+        android:contentDescription="@string/movie_poster" />
 
     <Space
         android:layout_width="match_parent"

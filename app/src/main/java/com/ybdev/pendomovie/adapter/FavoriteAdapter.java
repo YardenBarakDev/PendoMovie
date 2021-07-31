@@ -1,6 +1,5 @@
 package com.ybdev.pendomovie.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,42 +13,43 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.ybdev.pendomovie.R;
-import com.ybdev.pendomovie.mvvm.model.MovieList;
+import com.ybdev.pendomovie.room_db.SingleMovieModel;
 import com.ybdev.pendomovie.util.MyConstants;
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder>{
 
-    private static List<MovieList.ResultBean> movieList;
+
+    private static List<SingleMovieModel> movieList;
     private final Context context;
 
-    public MovieAdapter(List<MovieList.ResultBean> movieList, Context context){
-        MovieAdapter.movieList = movieList;
+    public FavoriteAdapter(List<SingleMovieModel> movieList, Context context){
+        FavoriteAdapter.movieList = movieList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FavoriteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
-        return new ViewHolder(view);
+        return new FavoriteAdapter.ViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FavoriteAdapter.ViewHolder holder, int position) {
 
         try{
-            MovieList.ResultBean movie = movieList.get(position);
+           SingleMovieModel movie = movieList.get(position);
+
             if (movie.getPoster_path() != null)
                 Glide.with(context)
-                    .load("https://image.tmdb.org/t/p/w500"+movie.getPoster_path())
-                    .into(holder.movie_poster);
+                        .load("https://image.tmdb.org/t/p/w500"+movie.getPoster_path())
+                        .into(holder.movie_poster);
 
-            holder.movie_poster.setClipToOutline(true);
-            holder.movie_vote_average.setText(movie.getVote_average() + "");
-            holder.movie_name.setText(movie.getTitle());
-            holder.movie_overview.setText(movie.getOverview());
+           holder.movie_poster.setClipToOutline(true);
+           holder.movie_vote_average.setText(movie.getRelease_date());
+           holder.movie_name.setText(movie.getOriginal_title());
+           holder.movie_overview.setText(movie.getOverview());
         }catch (NullPointerException e){
             Log.d("jjjj", "end of list");
         }
@@ -60,7 +60,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
-    public void setMovieArray(List<MovieList.ResultBean> movieArray){
+    public void setMovieArray(List<SingleMovieModel> movieArray){
         int size = movieList.size() -1;
         movieList.addAll(movieArray);
         notifyItemRangeChanged(size, movieList.size() -1);

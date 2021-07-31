@@ -2,7 +2,6 @@ package com.ybdev.pendomovie.retrofit;
 
 import com.ybdev.pendomovie.mvvm.model.MovieList;
 import com.ybdev.pendomovie.mvvm.model.MovieSearchModel;
-import com.ybdev.pendomovie.mvvm.model.SingleMovieSearchModel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

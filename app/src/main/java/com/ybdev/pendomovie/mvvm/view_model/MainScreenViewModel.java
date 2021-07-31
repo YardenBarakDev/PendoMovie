@@ -1,6 +1,5 @@
 package com.ybdev.pendomovie.mvvm.view_model;
 
-import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.ybdev.pendomovie.mvvm.model.MovieList;
@@ -16,11 +15,10 @@ public class MainScreenViewModel extends ViewModel {
     private int maxPages = 1;
     private int currentPage = 1;
     private final ArrayList<MovieList.ResultBean> fetchedMovies = new ArrayList<>();
-
-    private MainScreenViewModel(){observer();
-        Log.d("kkkk", "MainScreenViewModel: observe");
-    }
     public MutableLiveData<MovieList> movieListViewModel = new MutableLiveData<>();
+
+
+    private MainScreenViewModel(){observer();}
 
     public static MainScreenViewModel getInstance(){
         if (instance == null)
@@ -61,7 +59,7 @@ public class MainScreenViewModel extends ViewModel {
         return fetchedMovies;
     }
 
-    public int getFetcehdSize(){
+    public int getFetchedSize(){
         return fetchedMovies.size();
     }
 }

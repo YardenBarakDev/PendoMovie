@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".mvvm.view.fragments.FragmentMainScreen">
+    tools:context=".mvvm.view.fragments.FragmentFavorite">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topBar"
@@ -14,43 +14,26 @@
         >
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/fragmentMainScreen_topAppBar"
+            android:id="@+id/fragmentFavorite_topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/black"
             app:titleTextColor="@color/yellow"
-            app:menu="@menu/fragment_main_screen_menu"
-            app:title="@string/app_name"
+            app:title="@string/favorite"
             app:titleCentered="true"
-            app:navigationIcon="@drawable/icon_search"
+            app:navigationIcon="@drawable/left_arrow"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             >
 
-
-
         </com.google.android.material.appbar.MaterialToolbar>
-
-
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragmentMainScreen_RecyclerView"
+        android:id="@+id/fragmentFavorite_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/topBar"
-        android:layout_above="@+id/fragmentMainScreen_bottomNavigationView"
-        />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/fragmentMainScreen_bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/black"
-        app:itemIconTint="@drawable/bottom_nav_color"
-        app:itemTextColor="@drawable/bottom_nav_color"
-        app:menu="@menu/bottom_navigation_bar_menu"
         />
 
 </RelativeLayout>

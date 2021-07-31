@@ -1,6 +1,5 @@
 package com.ybdev.pendomovie.mvvm.view.fragments;
 
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.ybdev.pendomovie.R;
 import com.ybdev.pendomovie.mvvm.model.MovieList;
+import com.ybdev.pendomovie.mvvm.view_model.MovieDetailsViewModel;
 import com.ybdev.pendomovie.util.MyConstants;
 
 public class FragmentMovieDetails extends Fragment {
@@ -26,6 +26,7 @@ public class FragmentMovieDetails extends Fragment {
     private TextView movieDetailsFragment_releaseDate;
     private TextView movieDetailsFragment_voteAverage;
     private TextView movieDetailsFragment_totalVotes;
+    private MovieList.ResultBean movie;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +41,14 @@ public class FragmentMovieDetails extends Fragment {
     private void setTopBarClickListener() {
         fragmentMovieDetails_topAppBar.setNavigationOnClickListener(v ->
                 NavHostFragment.findNavController(FragmentMovieDetails.this).popBackStack());
+
+
+        fragmentMovieDetails_topAppBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.addToFavorite){
+                MovieDetailsViewModel.getInstance().addMovieToFavorite(movie);
+            }
+            return true;
+        });
     }
 
     /**
@@ -48,25 +57,23 @@ public class FragmentMovieDetails extends Fragment {
     @SuppressLint("SetTextI18n")
     private void showMovieDetails() {
         try {
-            MovieList.ResultBean movie = getArguments().getParcelable(MyConstants.MOVIE);
+            movie = getArguments().getParcelable(MyConstants.MOVIE);
             fragmentMovieDetails_topAppBar.setTitle(movie.getTitle());
             setImage(movie.getPoster_path());
             movieDetailsFragment_movieOverview.setText(movie.getOverview());
             movieDetailsFragment_releaseDate.setText(movie.getRelease_date());
-            movieDetailsFragment_voteAverage.setText(""+movie.getVote_average());
-            movieDetailsFragment_totalVotes.setText("" +movie.getVote_count());
-
-        }catch (NullPointerException e){
+            movieDetailsFragment_voteAverage.setText("" + movie.getVote_average());
+            movieDetailsFragment_totalVotes.setText("" + movie.getVote_count());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
-
     /**
-     *this function will present the movie poster from the url using Glide library
+     * this function will present the movie poster from the url using Glide library
      */
     private void setImage(String poster_path) {
         Glide.with(getContext())
-                .load("https://image.tmdb.org/t/p/original"+poster_path)
+                .load("https://image.tmdb.org/t/p/original" + poster_path)
                 .into(movieDetailsFragment_image);
     }
 
@@ -78,4 +85,5 @@ public class FragmentMovieDetails extends Fragment {
         movieDetailsFragment_voteAverage = view.findViewById(R.id.movieDetailsFragment_voteAverage);
         movieDetailsFragment_totalVotes = view.findViewById(R.id.movieDetailsFragment_totalVotes);
     }
+
 }

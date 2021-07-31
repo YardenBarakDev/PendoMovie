@@ -3,6 +3,7 @@ package com.ybdev.pendomovie.mvvm.view.fragments;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.ybdev.pendomovie.R;
 import com.ybdev.pendomovie.adapter.SearchAdapter;
-import com.ybdev.pendomovie.mvvm.model.MovieList;
 import com.ybdev.pendomovie.mvvm.model.MovieSearchModel;
 import com.ybdev.pendomovie.mvvm.view_model.SearchViewModel;
 import java.util.ArrayList;
@@ -32,18 +32,13 @@ public class FragmentSearch extends Fragment {
     private RecyclerView fragmentSearch_RecyclerView;
     private ArrayAdapter<String> possibleResults;
     private SearchAdapter searchAdapter;
-    private final ArrayList<MovieList.ResultBean> movieList = new ArrayList<>();
     private boolean isLoading = true;
-    private int maxPagesForRelated = 1;
-    private int currentPage = 1;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
             view = inflater.inflate(R.layout.fragment_search, container, false);
-
         findViews();
         initRecyclerView();
         initArrayAdapter();
@@ -77,12 +72,12 @@ public class FragmentSearch extends Fragment {
      * according to the search results
      */
     private void observeRelatedMovies(){
-        SearchViewModel.getInstance().getRelatedMovies(currentPage).observe(getViewLifecycleOwner(), resultBeans -> {
+        SearchViewModel.getInstance().movieListViewModel.observe(getViewLifecycleOwner(), resultBeans -> {
             progressBarVisibility(false);
             if (resultBeans != null){
-                maxPagesForRelated = resultBeans.getTotal_pages();
-                movieList.addAll(resultBeans.getResults());
-                searchAdapter.setMovieArray(movieList);
+                SearchViewModel.getInstance().setMaxPages(resultBeans.getTotal_pages());
+                searchAdapter.setMovieArray(resultBeans.getResults());
+                isLoading = true;
             }
         });
     }
@@ -100,11 +95,10 @@ public class FragmentSearch extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager gridLayoutManager = (GridLayoutManager)fragmentSearch_RecyclerView.getLayoutManager();
-                if (currentPage < maxPagesForRelated && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
-                    currentPage++;
+                if (searchAdapter.getItemCount() > 0 && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
                     isLoading = false;
                     progressBarVisibility(true);
-                    SearchViewModel.getInstance().getRelatedMovies(currentPage);//call the viewModel to fetch new data
+                    SearchViewModel.getInstance().getNewData();//call the viewModel to fetch new data
 
                 }
             }
@@ -141,14 +135,14 @@ public class FragmentSearch extends Fragment {
         fragmentSearch_autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
             prepareNextSearch();
             SearchViewModel.getInstance().setQueryForRelated(possibleResults.getItem(position));
-                SearchViewModel.getInstance().getRelatedMovies(currentPage);
+                SearchViewModel.getInstance().getNewData();
         });
 
         //when the user click on the search option
         fragmentSearch_autoCompleteTextView.setOnClickListener(v -> {
             prepareNextSearch();
             SearchViewModel.getInstance().setQueryForRelated(fragmentSearch_autoCompleteTextView.getText().toString());
-            SearchViewModel.getInstance().getRelatedMovies(currentPage);
+            SearchViewModel.getInstance().getNewData();
         });
     }
 
@@ -166,10 +160,7 @@ public class FragmentSearch extends Fragment {
      */
     private void prepareNextSearch(){
         progressBarVisibility(true);
-        currentPage = 1;
-        maxPagesForRelated = 1;
         fragmentSearch_RecyclerView.smoothScrollToPosition(0);
-        movieList.clear();
         searchAdapter.removeData();
     }
 
@@ -204,6 +195,5 @@ public class FragmentSearch extends Fragment {
         fragmentSearch_topAppBar = view.findViewById(R.id.fragmentSearch_topAppBar);
         fragmentSearch_autoCompleteTextView = view.findViewById(R.id.fragmentSearch_autoCompleteTextView);
         fragmentSearch_RecyclerView = view.findViewById(R.id.fragmentSearch_RecyclerView);
-
     }
 }

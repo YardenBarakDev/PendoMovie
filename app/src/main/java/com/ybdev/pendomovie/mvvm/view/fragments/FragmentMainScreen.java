@@ -1,7 +1,6 @@
 package com.ybdev.pendomovie.mvvm.view.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +46,6 @@ public class FragmentMainScreen extends Fragment {
         movieAdapter.setMovieArray(MainScreenViewModel.getInstance().getFetchedMovies());
     }
 
-    private void topBarListener() {
-        fragmentMainScreen_topAppBar.setNavigationOnClickListener(v ->
-                NavHostFragment.findNavController(FragmentMainScreen.this).
-                        navigate(R.id.action_fragmentMainScreen_to_fragmentSearch));
-    }
-
     /**
      * observe data from the viewModel
      * the viewModel will fetch the data from the repository and update the view.
@@ -60,23 +53,37 @@ public class FragmentMainScreen extends Fragment {
     private void observe() {
         MainScreenViewModel.getInstance().movieListViewModel.observe(getViewLifecycleOwner(), resultBeans -> {
             if (resultBeans != null) {
-                if (MainScreenViewModel.getInstance().getFetcehdSize() > movieAdapter.getItemCount()){
+                if (MainScreenViewModel.getInstance().getFetchedSize() > movieAdapter.getItemCount()){
                     MainScreenViewModel.getInstance().setMaxPages(resultBeans.getTotal_pages());
                     movieAdapter.setMovieArray(resultBeans.getResults());//
-                    Log.d("kkkk", "fetched size = " +MainScreenViewModel.getInstance().getFetcehdSize());
-                    Log.d("kkkk", "adapter array size = " + movieAdapter.getItemCount());
                     isLoading = true;
                 }
             }
         });
     }
 
-    private void initRecyclerView() {
-        int numOfColumns = 2;
-        movieAdapter = new MovieAdapter(new ArrayList<>(), getContext());
-        fragmentMainScreen_RecyclerView.setLayoutManager(new GridLayoutManager(getContext(), numOfColumns));
-        fragmentMainScreen_RecyclerView.setAdapter(movieAdapter);
+    /** Listeners
+     * top bar
+     * bottom navigation view
+     * recyclerView
+     * */
+
+
+    private void topBarListener() {
+        fragmentMainScreen_topAppBar.setNavigationOnClickListener(v ->
+                NavHostFragment.findNavController(FragmentMainScreen.this).
+                        navigate(R.id.action_fragmentMainScreen_to_fragmentSearch));
+
+
+        fragmentMainScreen_topAppBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.moveToFavorite) {
+                NavHostFragment.findNavController(FragmentMainScreen.this).
+                        navigate(R.id.action_fragmentMainScreen_to_fragmentFavorite);
+            }
+            return true;
+        });
     }
+
 
     private void bottomNavigationViewListener() {
         fragmentMainScreen_bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -116,6 +123,13 @@ public class FragmentMainScreen extends Fragment {
               }
           }
       });
+    }
+
+    private void initRecyclerView() {
+        int numOfColumns = 2;
+        movieAdapter = new MovieAdapter(new ArrayList<>(), getContext());
+        fragmentMainScreen_RecyclerView.setLayoutManager(new GridLayoutManager(getContext(), numOfColumns));
+        fragmentMainScreen_RecyclerView.setAdapter(movieAdapter);
     }
 
     private void findViews() {
