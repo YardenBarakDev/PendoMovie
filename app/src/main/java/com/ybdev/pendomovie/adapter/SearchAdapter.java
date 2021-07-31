@@ -31,20 +31,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        //if (viewType == VIEW_TYPE_ITEM) {
-            view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
-        //}
-        //else{
-        //    view = LayoutInflater.from(context).inflate(R.layout.item_loading, parent, false);
-       // }
+        View view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
         return new ViewHolder(view);
     }
 
+    /**
+     * present the data from the list in each cell
+     * in some cases the data from the api can be null, so this is why it surrounded with try and catch
+     */
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.ViewHolder holder, int position) {
-
         try{
             MovieList.ResultBean movie = movieList.get(position);
             if (movie.getPoster_path() != null)
@@ -66,6 +63,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return movieList.size();
     }
 
+    /**
+     *add new data in the movie list and notify the adapter
+     */
     public void setMovieArray(List<MovieList.ResultBean> movieArray){
         int size = movieList.size() -1;
         movieList.addAll(movieArray);
@@ -77,9 +77,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         movieList.clear();
         notifyDataSetChanged();
     }
-    public void removeLast(){
-        movieList.remove(movieList.size()-1);
-    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView movie_vote_average;
@@ -95,6 +93,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             movie_name = view.findViewById(R.id.movie_name);
             movie_overview = view.findViewById(R.id.movie_overview);
 
+            //once the user clicks on a cell, the detail fragment will open with the movie data
+            //which stored in the bundle
             view.setOnClickListener(v ->{
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(MyConstants.MOVIE, movieList.get(getAdapterPosition()));

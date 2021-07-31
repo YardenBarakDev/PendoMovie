@@ -20,13 +20,15 @@ import retrofit2.Response;
 public class TMDBRepository {
 
     private static TMDBRepository instance;
+    private final ApiInterface apiInterface;
+
     private final String TAG = "TMDBRepositoryLog";
     private final String API_KEY = "21fd2d263e811750bdb2445fe08d608e";
     private final String LANGUAGE = "en-US";
-    public MutableLiveData<List<MovieList.ResultBean>> list = new MutableLiveData<>();
-    public MutableLiveData<List<MovieSearchModel.ResultBean>> queryList = new MutableLiveData<>();
+
+    public MutableLiveData<MovieList> list = new MutableLiveData<>();
     public MutableLiveData<MovieList> relatedMoviesList = new MutableLiveData<>();
-    private final ApiInterface apiInterface;
+    public MutableLiveData<List<MovieSearchModel.ResultBean>> queryList = new MutableLiveData<>();
 
 
     public static TMDBRepository getInstance(){
@@ -41,16 +43,14 @@ public class TMDBRepository {
 
 
     //for main page
-    public MutableLiveData<List<MovieList.ResultBean>> getMovieList(int page, String category){
+    public MutableLiveData<MovieList> getMovieList(int page, String category){
         Call<MovieList> call = apiInterface.getMovies(category, API_KEY, LANGUAGE, page);
 
         call.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(@NonNull Call<MovieList> call, @NonNull Response<MovieList> response) {
-                MovieList movieList = response.body();
-                if (movieList.getResults() != null) {
-                    list.setValue(movieList.getResults());
-                }
+               if (response.body() != null)
+                   list.setValue(response.body());
             }
 
             @Override

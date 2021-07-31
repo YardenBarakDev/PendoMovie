@@ -34,13 +34,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        if (viewType == VIEW_TYPE_ITEM) {
-            view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
-        }
-        else{
-            view = LayoutInflater.from(context).inflate(R.layout.item_loading, parent, false);
-        }
+        View view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
         return new ViewHolder(view);
     }
 
@@ -76,15 +70,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     public void setMovieArray(List<MovieList.ResultBean> movieArray){
-        movieList.clear();
+        int size = movieList.size() -1;
         movieList.addAll(movieArray);
-        movieList.add(null);
-        notifyDataSetChanged();
+        notifyItemRangeChanged(size, movieList.size() -1);
     }
 
+    public void clearArray(){
+        movieList.clear();
+        notifyDataSetChanged();
+    }
     public void removeLast(){
         movieList.remove(movieList.size()-1);
     }
+
+    public List<MovieList.ResultBean> getMovieList() {
+        return movieList;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView movie_vote_average;

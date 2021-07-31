@@ -66,7 +66,7 @@ public class FragmentMovieDetails extends Fragment {
      */
     private void setImage(String poster_path) {
         Glide.with(getContext())
-                .load("https://image.tmdb.org/t/p/w500"+poster_path)
+                .load("https://image.tmdb.org/t/p/original"+poster_path)
                 .into(movieDetailsFragment_image);
     }
 
