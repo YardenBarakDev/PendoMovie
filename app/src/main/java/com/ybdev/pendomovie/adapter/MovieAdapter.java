@@ -3,7 +3,6 @@ package com.ybdev.pendomovie.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             holder.movie_name.setText(movie.getTitle());
             holder.movie_overview.setText(movie.getOverview());
         }catch (NullPointerException e){
-            Log.d("jjjj", "end of list");
+           e.printStackTrace();
         }
     }
 
@@ -60,7 +59,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
-    public void setMovieArray(List<MovieList.ResultBean> movieArray){
+    public void updateMovieArray(List<MovieList.ResultBean> movieArray){
         int size = movieList.size() -1;
         movieList.addAll(movieArray);
         notifyItemRangeChanged(size, movieList.size() -1);

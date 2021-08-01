@@ -39,10 +39,12 @@ public class FragmentMovieDetails extends Fragment {
     }
 
     private void setTopBarClickListener() {
+        // pop the view from the stack
         fragmentMovieDetails_topAppBar.setNavigationOnClickListener(v ->
                 NavHostFragment.findNavController(FragmentMovieDetails.this).popBackStack());
 
 
+        //save the presented movie in Room db
         fragmentMovieDetails_topAppBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.addToFavorite){
                 MovieDetailsViewModel.getInstance().addMovieToFavorite(movie);
@@ -69,7 +71,7 @@ public class FragmentMovieDetails extends Fragment {
         }
     }
     /**
-     * this function will present the movie poster from the url using Glide library
+     * this function is using Glide library to fetch and present the movie poster from the url
      */
     private void setImage(String poster_path) {
         Glide.with(getContext())

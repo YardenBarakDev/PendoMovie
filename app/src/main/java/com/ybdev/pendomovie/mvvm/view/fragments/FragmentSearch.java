@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.ybdev.pendomovie.R;
-import com.ybdev.pendomovie.adapter.SearchAdapter;
+import com.ybdev.pendomovie.adapter.MovieAdapter;
 import com.ybdev.pendomovie.mvvm.model.MovieSearchModel;
 import com.ybdev.pendomovie.mvvm.view_model.SearchViewModel;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class FragmentSearch extends Fragment {
     private AutoCompleteTextView fragmentSearch_autoCompleteTextView;
     private RecyclerView fragmentSearch_RecyclerView;
     private ArrayAdapter<String> possibleResults;
-    private SearchAdapter searchAdapter;
+    private MovieAdapter searchAdapter;
     private boolean isLoading = true;
 
     @Nullable
@@ -55,16 +55,15 @@ public class FragmentSearch extends Fragment {
      * according to the search results
      */
     private void observeMatchList() {
-            SearchViewModel.getInstance().movieNameSearch().observe(getViewLifecycleOwner(), resultBeans -> {
-                if (resultBeans != null) {
-                    possibleResults.clear();
-                    for (MovieSearchModel.ResultBean s : resultBeans) {
-                        possibleResults.add(s.getName());
-                        fragmentSearch_autoCompleteTextView.setAdapter(possibleResults);
-                    }
-                    isLoading = true;
-                }
-            });
+        SearchViewModel.getInstance().movieNameSearch().observe(getViewLifecycleOwner(), resultBeans -> {
+            possibleResults.clear();
+            if (resultBeans != null) {
+                for (MovieSearchModel.ResultBean s : resultBeans)
+                    possibleResults.add(s.getName());
+                possibleResults.notifyDataSetChanged();
+                isLoading = true;
+            }
+        });
     }
 
     /**
@@ -76,7 +75,7 @@ public class FragmentSearch extends Fragment {
             progressBarVisibility(false);
             if (resultBeans != null){
                 SearchViewModel.getInstance().setMaxPages(resultBeans.getTotal_pages());
-                searchAdapter.setMovieArray(resultBeans.getResults());
+                searchAdapter.updateMovieArray(resultBeans.getResults());
                 isLoading = true;
             }
         });
@@ -95,7 +94,7 @@ public class FragmentSearch extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager gridLayoutManager = (GridLayoutManager)fragmentSearch_RecyclerView.getLayoutManager();
-                if (searchAdapter.getItemCount() > 0 && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() -1 == gridLayoutManager.findLastVisibleItemPosition()){
+                if (searchAdapter.getItemCount() > 0 && isLoading && gridLayoutManager != null && searchAdapter.getItemCount() - 1 == gridLayoutManager.findLastVisibleItemPosition()){
                     isLoading = false;
                     progressBarVisibility(true);
                     SearchViewModel.getInstance().getNewData();//call the viewModel to fetch new data
@@ -111,9 +110,6 @@ public class FragmentSearch extends Fragment {
      */
     private void autoCompleteTextViewListener() {
 
-        /*
-        a query will be sent to the api only if the text size is bigger then 2 and divided by 2
-         */
         fragmentSearch_autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -123,34 +119,46 @@ public class FragmentSearch extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 1 && s.length()%2 == 0){
-                    SearchViewModel.getInstance().setQuery(s.toString());
+                /*
+                will only fetch new data if: 2 < s.length() < from 35, the user type new letter,
+                no more possible results in the array adapter and the last char is not white space.
+                 */
+
+                //for some reason before always returned 0, so I used s.length() represent the current String size
+                //and start for the previous String size
+                if (SearchViewModel.getInstance().needToFetchNewMatchList(s, possibleResults.getCount(), s.length(), start)){
+                    SearchViewModel.getInstance().setQueryForPossibleResults(s.toString());
                     SearchViewModel.getInstance().movieNameSearch();
                 }
-            }
 
+
+            }
         });
 
         //when the user click on an item from the list
         fragmentSearch_autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
-            prepareNextSearch();
-            SearchViewModel.getInstance().setQueryForRelated(possibleResults.getItem(position));
+            if (SearchViewModel.getInstance().needToFetchNewMovies(fragmentSearch_autoCompleteTextView.getText().length(), fragmentSearch_autoCompleteTextView.getText().toString())) {
+                prepareNextSearch();
+                SearchViewModel.getInstance().setQueryForRelated(possibleResults.getItem(position));
                 SearchViewModel.getInstance().getNewData();
+            }
         });
 
         //when the user click on the search option
         fragmentSearch_autoCompleteTextView.setOnClickListener(v -> {
-            prepareNextSearch();
-            SearchViewModel.getInstance().setQueryForRelated(fragmentSearch_autoCompleteTextView.getText().toString());
-            SearchViewModel.getInstance().getNewData();
+            if (SearchViewModel.getInstance().needToFetchNewMovies(fragmentSearch_autoCompleteTextView.getText().length(), fragmentSearch_autoCompleteTextView.getText().toString())) {
+                prepareNextSearch();
+                SearchViewModel.getInstance().setQueryForRelated(fragmentSearch_autoCompleteTextView.getText().toString());
+                SearchViewModel.getInstance().getNewData();
+            }
         });
     }
 
     /**
-     *shows a circular progress bar until we get respond from the api
+     *shows a circular progress bar while fetching data from the api
      */
     private void progressBarVisibility(boolean visible){
-        if (visible)
+        if (visible && !SearchViewModel.getInstance().isLastPage())
             fragmentSearch_progressBar.setVisibility(View.VISIBLE);
         else
             fragmentSearch_progressBar.setVisibility(View.INVISIBLE);
@@ -161,7 +169,9 @@ public class FragmentSearch extends Fragment {
     private void prepareNextSearch(){
         progressBarVisibility(true);
         fragmentSearch_RecyclerView.smoothScrollToPosition(0);
-        searchAdapter.removeData();
+        searchAdapter.clearArray();
+        SearchViewModel.getInstance().setMaxPages(1);
+        possibleResults.clear();
     }
 
     /**
@@ -169,6 +179,7 @@ public class FragmentSearch extends Fragment {
      */
     private void initArrayAdapter() {
         possibleResults = new ArrayAdapter<>(getContext(), R.layout.search_cell, R.id.search_movie_name);
+        possibleResults.setNotifyOnChange(true);
         fragmentSearch_autoCompleteTextView.setAdapter(possibleResults);
     }
 
@@ -185,7 +196,7 @@ public class FragmentSearch extends Fragment {
      */
     private void initRecyclerView() {
         int numOfColumns = 2;
-        searchAdapter = new SearchAdapter(new ArrayList<>(), getContext());
+        searchAdapter = new MovieAdapter(new ArrayList<>(), getContext());
         fragmentSearch_RecyclerView.setLayoutManager(new GridLayoutManager(getContext(), numOfColumns));
         fragmentSearch_RecyclerView.setAdapter(searchAdapter);
     }

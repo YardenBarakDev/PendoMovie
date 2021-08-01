@@ -5,7 +5,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * this class will manage the HTTP request tp TMDBRepository using the library Retrofit2
+ * this class will manage the HTTP GET requests to TMDBRepository using the library Retrofit2
  *
  * this is a singleton class
  */

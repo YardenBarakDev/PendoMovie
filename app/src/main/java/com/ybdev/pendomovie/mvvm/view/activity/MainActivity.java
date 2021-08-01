@@ -2,6 +2,8 @@ package com.ybdev.pendomovie.mvvm.view.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Toast;
 import com.ybdev.pendomovie.R;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Oops it looks like there is a problem")
                 .setMessage("Please make sure you are connected to the network and try again")
                 .setIcon(R.drawable.app_icon)
+                .setPositiveButton("Ok", (dialog, which) -> /* no op*/ {})
                 .show();
     }
 }

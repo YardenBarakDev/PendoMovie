@@ -3,13 +3,11 @@ package com.ybdev.pendomovie.mvvm.view_model;
 import androidx.lifecycle.LiveData;
 import com.ybdev.pendomovie.repository.RoomDBRepository;
 import com.ybdev.pendomovie.room_db.SingleMovieModel;
-
 import java.util.List;
 
 public class FavoriteViewModel {
 
     private static FavoriteViewModel instance;
-    private final RoomDBRepository roomDBRepository = RoomDBRepository.getInstance();
     public LiveData<List<SingleMovieModel>> favoriteMoviesList = RoomDBRepository.getInstance().getAllFavoriteMovies();
 
     private FavoriteViewModel(){}
@@ -20,5 +18,10 @@ public class FavoriteViewModel {
         return instance;
     }
 
-
+    /**
+     *delete movie from Room db.
+     */
+    public void deleteMovieFromFavorites(SingleMovieModel singleMovieModel){
+        RoomDBRepository.getInstance().deleteMovieFromFavorite(singleMovieModel);
+    }
 }

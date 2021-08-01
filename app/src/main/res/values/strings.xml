@@ -20,9 +20,9 @@
     <string name="release_date">Release date:</string>
     <string name="vote_average">Vote average</string>
     <string name="total_votes">Total votes</string>
-    <string name="favorite">Favorite</string>
+    <string name="favorite">Favorites</string>
     <string name="movie_poster">Movie Poster</string>
-    <string name="add_to_favorite">Add to favorite</string>
-    <string name="your_favorite">Your Favorite</string>
+    <string name="add_to_favorite">Add to favorites</string>
+    <string name="your_favorite">Your Favorites</string>
 
 </resources>

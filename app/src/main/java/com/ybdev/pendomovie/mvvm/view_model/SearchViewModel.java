@@ -1,7 +1,5 @@
 package com.ybdev.pendomovie.mvvm.view_model;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.ybdev.pendomovie.mvvm.model.MovieList;
@@ -13,7 +11,7 @@ public class SearchViewModel extends ViewModel {
 
     private static SearchViewModel instance;
     private final TMDBRepository repository = TMDBRepository.getInstance();
-    private String query = "";
+    private String queryForPossibleResults = "";
     private int currentPage = 1;
     private int maxPages = 1;
     private String queryForRelated = "";
@@ -28,6 +26,10 @@ public class SearchViewModel extends ViewModel {
         return instance;
     }
 
+    /**
+     * decide if new data should be fetched. if the last page was fetched
+     * it won't request new data from the api
+     */
     public void getNewData(){
         if (currentPage <= maxPages && queryForRelated.length() > 1){
             fetchRelatedMovies();
@@ -35,6 +37,9 @@ public class SearchViewModel extends ViewModel {
         }
     }
 
+    /**
+     * observe data from the repository and update the view
+     */
     private void observe() {
         repository.getRelatedMovies(queryForRelated, currentPage).observeForever(movieList -> {
             if (movieList != null){
@@ -49,19 +54,46 @@ public class SearchViewModel extends ViewModel {
 
     public MutableLiveData<List<MovieSearchModel.ResultBean>> movieNameSearch(){
         int page = 1;
-        return repository.movieNameSearch(page,query);
+        return repository.movieNameSearch(page,queryForPossibleResults);
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public boolean needToFetchNewMatchList(CharSequence s, int possibleMatches, int currentSize, int previousSize){
+        return s.length() > 2 && s.length() < 35 &&
+                currentSize > previousSize &&
+                possibleMatches == 0 &&
+                !Character.isWhitespace(s.charAt(s.length() - 1));
     }
 
+    public boolean needToFetchNewMovies(int querySize, String query){
+        return querySize > 1 && !query.equals(queryForRelated);
+    }
+
+    /**
+     *
+     * @param queryForPossibleResults new query for PossibleResults list
+     */
+    public void setQueryForPossibleResults(String queryForPossibleResults) {
+        this.queryForPossibleResults = queryForPossibleResults;
+    }
+
+    /**
+     *
+     * @param queryForRelated new query for movie search
+     */
     public void setQueryForRelated(String queryForRelated) {
         this.queryForRelated = queryForRelated;
         currentPage = 1;
     }
 
+    /**
+     *
+     * @param maxPages number of pages the api returned for the pagination
+     */
     public void setMaxPages(int maxPages) {
         this.maxPages = maxPages;
+    }
+
+    public boolean isLastPage(){
+        return currentPage > maxPages;
     }
 }

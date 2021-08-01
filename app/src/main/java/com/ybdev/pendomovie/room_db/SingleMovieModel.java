@@ -6,25 +6,28 @@ import android.os.Parcelable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * this class represent a table in Room DB
+ */
 @Entity(tableName = "movie_table")
-public class SingleMovieModel implements Parcelable {
+public class SingleMovieModel {
 
     @PrimaryKey
     private int id;
     private String poster_path;
     private String overview;
     private String release_date;
-    private String original_title;
+    private String title;
 
     public SingleMovieModel() {
     }
 
-    public SingleMovieModel(int id, String poster_path, String overview, String release_date, String original_title) {
+    public SingleMovieModel(int id, String poster_path, String overview, String release_date, String title) {
         this.id = id;
         this.poster_path = poster_path;
         this.overview = overview;
         this.release_date = release_date;
-        this.original_title = original_title;
+        this.title = title;
     }
 
     protected SingleMovieModel(Parcel in) {
@@ -32,20 +35,8 @@ public class SingleMovieModel implements Parcelable {
         poster_path = in.readString();
         overview = in.readString();
         release_date = in.readString();
-        original_title = in.readString();
+        title = in.readString();
     }
-
-    public static final Creator<SingleMovieModel> CREATOR = new Creator<SingleMovieModel>() {
-        @Override
-        public SingleMovieModel createFromParcel(Parcel in) {
-            return new SingleMovieModel(in);
-        }
-
-        @Override
-        public SingleMovieModel[] newArray(int size) {
-            return new SingleMovieModel[size];
-        }
-    };
 
     public int getId() {
         return id;
@@ -79,26 +70,12 @@ public class SingleMovieModel implements Parcelable {
         this.release_date = release_date;
     }
 
-    public String getOriginal_title() {
-        return original_title;
+
+    public String getTitle() {
+        return title;
     }
 
-    public void setOriginal_title(String original_title) {
-        this.original_title = original_title;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(poster_path);
-        dest.writeString(overview);
-        dest.writeString(release_date);
-        dest.writeString(original_title);
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

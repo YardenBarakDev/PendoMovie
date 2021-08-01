@@ -7,11 +7,14 @@ import com.ybdev.pendomovie.repository.TMDBRepository;
 import com.ybdev.pendomovie.util.MyConstants;
 import java.util.ArrayList;
 
+/**
+ * Singleton class
+ */
 public class MainScreenViewModel extends ViewModel {
 
     private static MainScreenViewModel instance;
     public static TMDBRepository repository = TMDBRepository.getInstance();
-    private String category = MyConstants.NOW_PLAYING;
+    private String category = MyConstants.TOP_RATED;
     private int maxPages = 1;
     private int currentPage = 1;
     private final ArrayList<MovieList.ResultBean> fetchedMovies = new ArrayList<>();
@@ -61,5 +64,9 @@ public class MainScreenViewModel extends ViewModel {
 
     public int getFetchedSize(){
         return fetchedMovies.size();
+    }
+
+    public boolean isLastPage() {
+        return currentPage > maxPages;
     }
 }

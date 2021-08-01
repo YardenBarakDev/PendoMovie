@@ -31,7 +31,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     @NonNull
     @Override
     public FavoriteAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.movie_cell, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.favorite_cell, parent, false);
         return new FavoriteAdapter.ViewHolder(view);
     }
 
@@ -47,9 +47,9 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                         .into(holder.movie_poster);
 
            holder.movie_poster.setClipToOutline(true);
-           holder.movie_vote_average.setText(movie.getRelease_date());
-           holder.movie_name.setText(movie.getOriginal_title());
+           holder.movie_name.setText(movie.getTitle());
            holder.movie_overview.setText(movie.getOverview());
+
         }catch (NullPointerException e){
             Log.d("jjjj", "end of list");
         }
@@ -60,10 +60,18 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         return movieList.size();
     }
 
-    public void setMovieArray(List<SingleMovieModel> movieArray){
+    /**
+     *
+     * update the movieList array and notify the recycler about the change
+     */
+    public void updateMovieArray(List<SingleMovieModel> movieArray){
         int size = movieList.size() -1;
         movieList.addAll(movieArray);
         notifyItemRangeChanged(size, movieList.size() -1);
+    }
+
+    public SingleMovieModel getMovie(int position){
+        return movieList.get(position);
     }
 
     public void clearArray(){
@@ -73,24 +81,15 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView movie_vote_average;
         ImageView movie_poster;
         TextView movie_name;
         TextView movie_overview;
 
         ViewHolder(View view) {
             super(view);
-
-            movie_vote_average = view.findViewById(R.id.movie_vote_average);
             movie_poster = view.findViewById(R.id.movie_poster);
             movie_name = view.findViewById(R.id.movie_name);
             movie_overview = view.findViewById(R.id.movie_overview);
-
-            view.setOnClickListener(v ->{
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(MyConstants.MOVIE, movieList.get(getAdapterPosition()));
-                Navigation.findNavController(view).navigate(R.id.action_global_fragmentMovieDetails, bundle);
-            });
         }
     }
 }
