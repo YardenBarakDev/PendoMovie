@@ -54,6 +54,10 @@ public class MainScreenViewModel extends ViewModel {
         fetchedMovies.clear();
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public void setMaxPages(int maxPages) {
         this.maxPages = maxPages;
     }

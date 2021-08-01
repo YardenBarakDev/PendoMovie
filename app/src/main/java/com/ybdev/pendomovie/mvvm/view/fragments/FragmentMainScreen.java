@@ -1,6 +1,7 @@
 package com.ybdev.pendomovie.mvvm.view.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +27,13 @@ public class FragmentMainScreen extends Fragment {
     private ProgressBar fragmentMainScreen_progressBar;
     private RecyclerView fragmentMainScreen_RecyclerView;
     private MovieAdapter movieAdapter;
-    private boolean isLoading = true; //monitor when the application waits for a respond from the api
+    private boolean isLoading = true; //monitor when the application api calls status
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view == null)
             view = inflater.inflate(R.layout.fragment_main_screen, container, false);
-
+        Log.d("kkkk", "onCreateView: ");
         findViews();
         initRecyclerView();
         updateMovieList();
@@ -91,8 +92,6 @@ public class FragmentMainScreen extends Fragment {
      * listen to which option is selected in the bottomNavigationView and tells the view model to fetch relevant data
      */
     private void bottomNavigationViewListener() {
-        //set the middle icon (Top Rated) as selected
-        fragmentMainScreen_bottomNavigationView.setSelectedItemId( R.id.top_rated);
 
         //replace the movie list to match the the item description
         fragmentMainScreen_bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -172,13 +171,16 @@ public class FragmentMainScreen extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        fragmentMainScreen_bottomNavigationView.setSelectedItemId( R.id.top_rated);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        MainScreenViewModel.getInstance().setCategory(MyConstants.TOP_RATED);
-        MainScreenViewModel.getInstance().getNewData();
+        switch (MainScreenViewModel.getInstance().getCategory()){
+            case MyConstants.TOP_RATED:
+                fragmentMainScreen_bottomNavigationView.setSelectedItemId( R.id.top_rated);
+                break;
+            case MyConstants.NOW_PLAYING:
+                fragmentMainScreen_bottomNavigationView.setSelectedItemId( R.id.now_playing);
+                break;
+            case MyConstants.POPULAR:
+                fragmentMainScreen_bottomNavigationView.setSelectedItemId( R.id.popular);
+                break;
+        }
     }
 }
