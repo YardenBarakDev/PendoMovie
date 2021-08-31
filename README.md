@@ -1,5 +1,4 @@
 # PendoMovie
-Mobile Development Assignment - Pendo
 
 <img src= "images/main%20screen.jpg" width=300 wide =300>
 
