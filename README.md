@@ -1,5 +1,15 @@
 # PendoMovie
 
+
+Technologies and Components Used
+RoomDB
+Navigation Graph
+Async Task (Executer in RoomDB)
+Glide 
+MVVM & Live-Data
+TMDB API
+
+
 <img src= "images/main%20screen.jpg" width=300 wide =300>
 
 <img src= "images/now%20playing.jpg" width=300 wide =300>
